@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/option_item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:checked="true"
+    android:onClick="onLinearLayoutClicked">
+
+    <LinearLayout
+        android:id="@+id/option_item_section"
+        android:layout_width="0dp"
+        android:layout_weight="10"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/option_item_check"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:checked="false" />
+
+        <TextView
+            android:id="@+id/option_item_item"
+            android:layout_width="0dp"
+            android:layout_weight="9"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textAlignment="center"
+            android:text="품목"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/option_item_price"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textAlignment="center"
+            android:text="가격"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
+    </LinearLayout>
+</LinearLayout>
