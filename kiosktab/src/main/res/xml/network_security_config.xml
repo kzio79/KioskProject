@@ -4,6 +4,6 @@
         <domain includeSubdomains="true">
             format-backend-cicd-env.eba-bx7ydd2s.ap-northeast-2.elasticbeanstalk.com
         </domain>
-        <domain includeSubdomains="true">api.format.kro.kr</domain>
+<!--        <domain includeSubdomains="true">api.format.kro.kr</domain>-->
     </domain-config>
 </network-security-config>

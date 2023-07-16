@@ -17,9 +17,9 @@ import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import com.project.kioask.model.orderModel
 import com.project.kioask.retrofit.NetworkService
-import com.project.kioasktab.Fragment.CartFragment
 import com.project.kioasktab.databinding.ActivityPayBinding
 import com.project.kioasktab.databinding.CustomDialogBinding
+import com.project.kioasktab.databinding.FragmentCartBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -30,6 +30,7 @@ import java.util.Hashtable
 class PayActivity : AppCompatActivity() {
     lateinit var bindingpay: ActivityPayBinding
     lateinit var customDialogBinding: CustomDialogBinding
+    lateinit var cartBinding: FragmentCartBinding
     var handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,7 @@ class PayActivity : AppCompatActivity() {
         bindingpay = ActivityPayBinding.inflate(layoutInflater)
         setContentView(bindingpay.root)
 
-        customDialogBinding = CustomDialogBinding.inflate(layoutInflater)
+
 
         val tokenSaved = getSharedPreferences("token", MODE_PRIVATE)
         val token = tokenSaved.getString("token", null)
@@ -57,6 +58,8 @@ class PayActivity : AppCompatActivity() {
         paymentData.put("customerKey", customerKey)
 
         try {
+
+            customDialogBinding = CustomDialogBinding.inflate(layoutInflater)
             val hints = Hashtable<EncodeHintType, Any>()
             hints[EncodeHintType.CHARACTER_SET] = Charsets.UTF_8.toString()
 
@@ -88,6 +91,7 @@ class PayActivity : AppCompatActivity() {
 
                     val request = Request.Builder()
                         .url("https://api.tosspayments.com/v1/payments/orders/$orderid")
+//                        .url("https://api.tosspayments.com/v1/payments/confirm/$orderid")
                         .get()
                         .addHeader(
                             "Authorization",
@@ -108,6 +112,9 @@ class PayActivity : AppCompatActivity() {
                                             Intent(this@PayActivity, ReceiptActivity::class.java)
                                         startActivity(successIntent)
                                     })
+//                                val successIntent =
+//                                    Intent(this@PayActivity, ReceiptActivity::class.java)
+//                                startActivity(successIntent)
                             }
                         } else {
                             handler.postDelayed({
@@ -115,10 +122,9 @@ class PayActivity : AppCompatActivity() {
                                     Log.w("zio", "결제인증 재 시작: $response, orderid: $orderid")
                                     dialog("Qr코드를 다시 스캔해 주세요.", "결제요청 결과",
                                         customDialogBinding.dialogButton.setOnClickListener {
-                                            val successIntent =
-                                                Intent(this@PayActivity, CartFragment::class.java)
-                                            startActivity(successIntent)
+                                            finishAfterTransition()
                                         })
+
                                 }
                             }, 33_000)
                         }
@@ -156,7 +162,7 @@ class PayActivity : AppCompatActivity() {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-            val dto = orderModel(orderid!!, ordername!!, totalprice)
+            val dto = orderModel(orderid!!, ordername!!, totalprice, "cardpay", 1)
             Log.w("zio", "postItem: $orderid, $ordername, $totalprice")
 
             val service = retrofit.create(NetworkService::class.java)

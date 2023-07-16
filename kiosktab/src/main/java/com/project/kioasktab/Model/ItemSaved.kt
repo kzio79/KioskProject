@@ -11,9 +11,14 @@ data class ItemModel(
 )
 
 data class orderModel(
-    var orderid: String,
+//    var orderid: String,
+//    var ordername: String,
+//    var totalprice: Int
+    var orderid:String,
     var ordername: String,
-    var totalprice: Int
+    var totalprice: Int,
+    var paymentkey: String,
+    var orderstate: Int
 )
 
 object OrderLIst {

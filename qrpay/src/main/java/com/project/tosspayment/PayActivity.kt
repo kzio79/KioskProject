@@ -119,6 +119,8 @@ class PayActivity : AppCompatActivity() {
                                             val tossService = retrofit.create(NetworkService::class.java)
                                             val postCall = tossService.doPostList(token , dto)
 
+                                            Log.w("zio","dto : $dto")
+
                                             Log.w("zio","tosspayment_token : $token")
                                             postCall.enqueue(object : retrofit2.Callback<orderModel> {
                                                 override fun onResponse(
