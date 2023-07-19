@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
+      "versionCode": 17,
       "versionName": "1.0",
-      "outputFile": "tosspayment-release.apk"
+      "outputFile": "qrpay-release.apk"
     }
   ],
   "elementType": "File"

@@ -91,7 +91,6 @@ class PayActivity : AppCompatActivity() {
 
                     val request = Request.Builder()
                         .url("https://api.tosspayments.com/v1/payments/orders/$orderid")
-//                        .url("https://api.tosspayments.com/v1/payments/confirm/$orderid")
                         .get()
                         .addHeader(
                             "Authorization",
@@ -112,9 +111,6 @@ class PayActivity : AppCompatActivity() {
                                             Intent(this@PayActivity, ReceiptActivity::class.java)
                                         startActivity(successIntent)
                                     })
-//                                val successIntent =
-//                                    Intent(this@PayActivity, ReceiptActivity::class.java)
-//                                startActivity(successIntent)
                             }
                         } else {
                             handler.postDelayed({

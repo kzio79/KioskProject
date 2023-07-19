@@ -5,5 +5,5 @@
     <string name="payment_ClientKey">test_ck_4vZnjEJeQVxMzOnX66qrPmOoBN0k</string>
     <string name="pay_clientkey">Basic dGVzdF9za19aT1J6ZE1hcU4zd015a1p5bDdOcjVBa1lYUUd3Og==</string>
     <string name="payment_SecretKey">test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R</string>
-    <string name="backend_secretKey">Y2xvdWRmb3JtYXRwcm9qZWN0</string>
+    <string name="backend_passKey">Y2xvdWRmb3JtYXRwcm9qZWN0</string>
 </resources>

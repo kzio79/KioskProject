@@ -2,11 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <uses-feature
         android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+
 
     <application
         android:allowBackup="true"
@@ -14,10 +18,7 @@
         android:label="QR코드 결제"
         android:roundIcon="@drawable/qrpay"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppProject"
-        android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config"
-        tools:targetApi="n">
+        android:theme="@style/Theme.AppProject">
 
         <activity
             android:name=".PayActivity"

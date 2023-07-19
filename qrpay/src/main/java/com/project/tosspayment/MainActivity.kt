@@ -39,8 +39,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        customDialogBinding =
-            CustomDialogBinding.inflate(LayoutInflater.from(this@MainActivity))
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),REQUEST_CAMERA_PERMISSION)
@@ -48,44 +46,48 @@ class MainActivity : AppCompatActivity() {
             openScanner()
         }
 
-        val passkey = getString(R.string.backend_secretKey)
-
-        val tokenRetrofit = Retrofit.Builder()
-            .baseUrl("https://api.format.kro.kr")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("passkey",passkey)
-
-        val tokenService = tokenRetrofit.create(NetworkService::class.java)
-        val tokenCall: Call<JsonObject> = tokenService.doPostToken(passkey)
         try {
+            val passkey = getString(R.string.backend_passKey)
 
-            tokenCall.enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    if(response.isSuccessful){
-                        val token = response.body()?.get("token")?.asString
+            val tokenRetrofit = Retrofit.Builder()
+                .baseUrl("https://api.format.kro.kr")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-                        val tokenSaved = getSharedPreferences("token", MODE_PRIVATE)
-                        val tokenEdit: SharedPreferences.Editor = tokenSaved.edit()
-                        tokenEdit.putString("token",token)
-                        tokenEdit.apply()
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("passkey",passkey)
 
-                        Log.w("zio","token: $token")
+            val tokenService = tokenRetrofit.create(NetworkService::class.java)
+            val tokenCall: Call<JsonObject> = tokenService.doPostToken(passkey)
 
-                    }else{
-                        Log.w("zio","인증실패 : ${response.code()}")
+            try {
+                tokenCall.enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                        if(response.isSuccessful){
+
+                            val token = response.body()?.get("token")
+
+                            val tokenSaved = getSharedPreferences("token", MODE_PRIVATE)
+                            val tokenEdit: SharedPreferences.Editor = tokenSaved.edit()
+                            tokenEdit.putString("token", token.toString())
+                            tokenEdit.apply()
+
+                        }else{
+                            Log.w("zio","인증실패 : ${response.code()}")
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.w("zio","접속실패 : ${t.message}")
-                }
-            })
-        }catch (e: Exception){
-            e.printStackTrace()
-            Log.w("zio","error : ${e.message}")
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        Log.w("zio","접속실패 : ${t.message}")
+                    }
+                })
+            }catch (e: Exception){
+                e.printStackTrace()
+                Log.w("zio","error : ${e.message}")
+            }
+
+        }catch (e: IllegalArgumentException){
+            Log.w("zio","IllegalArgument : ${e.printStackTrace()}")
         }
     }
 
@@ -98,6 +100,21 @@ class MainActivity : AppCompatActivity() {
         QrScan.initiateScan()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            REQUEST_CAMERA_PERMISSION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    openScanner()
+                }else{
+                    Toast.makeText(this,"카메라를 허용해 주세요",Toast.LENGTH_LONG).show()
+                }
+                return
+            }
+        }
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         customDialogBinding =
             CustomDialogBinding.inflate(LayoutInflater.from(this@MainActivity))
@@ -106,7 +123,6 @@ class MainActivity : AppCompatActivity() {
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val scannerData = result.contents
 
-        Log.w("zio","scannerData: $scannerData")
         if (scannerData == null) {
             dialog("QR코드 확인","QR코드를 다시 스캔해 주세요",
                 customDialogBinding.dialogButton.setOnClickListener {
@@ -128,38 +144,21 @@ class MainActivity : AppCompatActivity() {
                 val ordername = matcher.group(3)
                 val customerKey = matcher.group(4)
 
-//                if(scannerData == orderid){
-//                    intent = Intent(this, PayActivity::class.java)
-//                    intent.putExtra("orderId", orderid)
-//                    intent.putExtra("price", price)
-//                    intent.putExtra("orderName", ordername)
-//                    intent.putExtra("customerKey", customerKey)
-//
-//                    startActivity(intent)
-//                    Log.w("zio","qr코드 ok")
-//                }else {
-//                    dialog("잘못된 QR코드 입니다.","QR코드를 확인해 주세요",
-//                        customDialogBinding.dialogButton.setOnClickListener {
-//                            intent = Intent(this, MainActivity::class.java)
-//                            startActivity(intent)
-//                        })
-//                    Log.w("zio","잘못된 qr코드")
-//                }
-                    intent = Intent(this, PayActivity::class.java)
-                    intent.putExtra("orderId", orderid)
-                    intent.putExtra("price", price)
-                    intent.putExtra("orderName", ordername)
-                    intent.putExtra("customerKey", customerKey)
+                intent = Intent(this, PayActivity::class.java)
+                intent.putExtra("orderId", orderid)
+                intent.putExtra("price", price)
+                intent.putExtra("orderName", ordername)
+                intent.putExtra("customerKey", customerKey)
 
-                    startActivity(intent)
+                startActivity(intent)
             }
             super.onActivityResult(requestCode, resultCode, data)
         }else{
             dialog("QR코드 확인","잘못된 QR코드 입니다.",
-            customDialogBinding.dialogButton.setOnClickListener {
-                intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            })
+                customDialogBinding.dialogButton.setOnClickListener {
+                    intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                })
         }
     }
 
