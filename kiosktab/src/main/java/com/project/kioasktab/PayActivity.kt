@@ -19,7 +19,6 @@ import com.project.kioask.model.orderModel
 import com.project.kioask.retrofit.NetworkService
 import com.project.kioasktab.databinding.ActivityPayBinding
 import com.project.kioasktab.databinding.CustomDialogBinding
-import com.project.kioasktab.databinding.FragmentCartBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -30,7 +29,6 @@ import java.util.Hashtable
 class PayActivity : AppCompatActivity() {
     lateinit var bindingpay: ActivityPayBinding
     lateinit var customDialogBinding: CustomDialogBinding
-    lateinit var cartBinding: FragmentCartBinding
     var handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +37,8 @@ class PayActivity : AppCompatActivity() {
         setContentView(bindingpay.root)
 
 
-
         val tokenSaved = getSharedPreferences("token", MODE_PRIVATE)
         val token = tokenSaved.getString("token", null)
-
-        Log.w("zio", "token : $token")
 
         val orderid: String? = intent.getStringExtra("orderId")!!
         val ordername: String? = intent.getStringExtra("orderName")!!
@@ -151,6 +146,7 @@ class PayActivity : AppCompatActivity() {
         }
 
 
+        //카드결제
         bindingpay.payResult.setOnClickListener {
 
             val retrofit = Retrofit.Builder()
@@ -158,13 +154,13 @@ class PayActivity : AppCompatActivity() {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-            val dto = orderModel(orderid!!, ordername!!, totalprice, "cardpay", 1)
-            Log.w("zio", "postItem: $orderid, $ordername, $totalprice")
+            val orderstate = 1
+            val paymentkey = "cardpay"
 
+            val dto = orderModel(orderid!!,ordername!!,totalprice,paymentkey,orderstate)
             val service = retrofit.create(NetworkService::class.java)
             val postCall = service.doPostList(token, dto)
 
-            Log.w("zio", "token2 : $token")
             postCall.enqueue(object : retrofit2.Callback<orderModel> {
                 override fun onResponse(
                     call: retrofit2.Call<orderModel>,

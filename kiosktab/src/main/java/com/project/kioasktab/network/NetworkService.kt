@@ -17,10 +17,7 @@ interface NetworkService {
     fun doGetList(@Header("Authorization") token: String?): Call<List<ItemModel>>
 
     @POST("/order/additem")
-    fun doPostList(
-        @Header("Authorization") token: String?,
-        @Body dto: orderModel?
-    ): Call<orderModel>
+    fun doPostList(@Header("Authorization") token: String?, @Body dto: orderModel): Call<orderModel>
 
     @Headers("Content-Type:application/json")
     @POST("/user/signpass")

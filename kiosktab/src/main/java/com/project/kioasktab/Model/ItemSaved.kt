@@ -11,9 +11,6 @@ data class ItemModel(
 )
 
 data class orderModel(
-//    var orderid: String,
-//    var ordername: String,
-//    var totalprice: Int
     var orderid:String,
     var ordername: String,
     var totalprice: Int,
