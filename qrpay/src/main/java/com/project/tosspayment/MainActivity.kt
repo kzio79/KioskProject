@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var customDialogBinding: CustomDialogBinding
     private var backPressTime:Long = 0
-    private var orderid = null
 
     private val REQUEST_CAMERA_PERMISSION = 1
 
@@ -123,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val scannerData = result.contents
 
-        if (scannerData == null || orderid == null) {
+        if (scannerData == null) {
             dialog("QR코드 확인","QR코드를 다시 스캔해 주세요",
                 customDialogBinding.dialogButton.setOnClickListener {
                     intent = Intent(this, MainActivity::class.java)
